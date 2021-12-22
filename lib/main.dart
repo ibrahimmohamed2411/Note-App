@@ -15,7 +15,7 @@ class NoteApp extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
-        statusBarColor: Colors.white,
+        statusBarColor: Colors.blueGrey,
       ),
     );
     return BlocProvider(

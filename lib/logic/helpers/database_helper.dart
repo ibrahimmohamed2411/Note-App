@@ -28,12 +28,12 @@ class DatabaseHelper {
   Future<void> _onCreate(Database db, int version) {
     return db.execute('''
       CREATE TABLE $_tableName(
-        ${NoteFields.id} INTEGER PRIMARY KEY AUTOINCREMENT,
+        ${NoteFields.timeStamp} TEXT PRIMARY KEY ,
         ${NoteFields.isImportant} INTEGER NOT NULL,
         ${NoteFields.number} INTEGER NOT NULL,
         ${NoteFields.title} TEXT NOT NULL,
-        ${NoteFields.description} TEXT NOT NULL,
-        ${NoteFields.createdTime} TEXT NOT NULL
+        ${NoteFields.description} TEXT NOT NULL
+        
       )''');
   }
 
@@ -49,21 +49,23 @@ class DatabaseHelper {
     // return note.copy(id: id);
   }
 
-  Future<Note> readNote(int id) async {
+  Future<Note> readNote(String timeStamp) async {
     final db = await instance.database;
-    final maps = await db.query(_tableName, where: 'id = ?', whereArgs: [id]);
+    final maps = await db.query(_tableName,
+        where: '${NoteFields.timeStamp} = ?', whereArgs: [timeStamp]);
     if (maps.isNotEmpty) {
       return Note.fromJson(maps.first);
     } else {
-      throw Exception('id $id is not found');
+      throw Exception('id $timeStamp is not found');
     }
   }
 
   Future<List<Note>> readAllNotes() async {
     Database db = await instance.database;
-    // const orderBy = '${NoteFields.createdTime} ASC';
+    const orderBy = '${NoteFields.timeStamp} ASC';
     final List<Map<String, dynamic>> result = await db.query(
       _tableName,
+      orderBy: orderBy,
     );
     List<Note> l = result.map((json) => Note.fromJson(json)).toList();
 
@@ -75,17 +77,17 @@ class DatabaseHelper {
     return await db.update(
       _tableName,
       note.toJson(),
-      where: "id = ?",
-      whereArgs: [note.id],
+      where: "${NoteFields.timeStamp} = ?",
+      whereArgs: [note.timeStamp],
     );
   }
 
-  Future<int> delete(int id) async {
+  Future<int> delete(String timeStamp) async {
     Database db = await instance.database;
     return await db.delete(
       _tableName,
-      where: "id = ?",
-      whereArgs: [id],
+      where: "${NoteFields.timeStamp} = ?",
+      whereArgs: [timeStamp],
     );
   }
 

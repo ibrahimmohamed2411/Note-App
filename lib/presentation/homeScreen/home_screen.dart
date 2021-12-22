@@ -80,15 +80,33 @@ class _HomeScreenState extends State<HomeScreen> {
       );
 
   Widget buildNotes(List<Note> notes) => StaggeredGridView.countBuilder(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         crossAxisCount: 2,
         mainAxisSpacing: 4,
         crossAxisSpacing: 4,
-        staggeredTileBuilder: (index) => StaggeredTile.fit(2),
+        staggeredTileBuilder: (index) => const StaggeredTile.fit(1),
         itemCount: notes.length,
         itemBuilder: (ctx, index) => GestureDetector(
           onTap: () {
             //go to details screen
+          },
+          onLongPress: () {
+            showDialog(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: const Text('Confirm Delete'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      BlocProvider.of<NoteCubit>(context)
+                          .deleteNote(notes[index]);
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Yes'),
+                  ),
+                ],
+              ),
+            );
           },
           child: NoteCardWidget(
             note: notes[index],

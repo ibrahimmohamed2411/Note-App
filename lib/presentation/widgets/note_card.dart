@@ -25,7 +25,8 @@ class NoteCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     /// Pick colors from the accent colors based on index
     final color = _lightColors[index % _lightColors.length];
-    final time = DateFormat.yMMMd().format(note.createdTime);
+    // var time = DateFormat("dd MMM yy hh:mm").format(note.timeStamp);
+    final time = DateFormat.yMMMd().format(note.timeStamp);
     final minHeight = getMinHeight(index);
 
     return Card(
@@ -41,14 +42,22 @@ class NoteCardWidget extends StatelessWidget {
               time,
               style: TextStyle(color: Colors.grey.shade700),
             ),
-            SizedBox(height: 4),
+            const SizedBox(height: 4),
             Text(
               note.title.toString(),
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.black,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              note.description,
+              style: const TextStyle(
+                color: Colors.black,
+              ),
+              maxLines: 3,
             ),
           ],
         ),

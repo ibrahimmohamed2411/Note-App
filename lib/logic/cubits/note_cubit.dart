@@ -10,14 +10,10 @@ class NoteCubit extends Cubit<NoteState> {
   //dateEdited DataFormat("MMM dd yy HH:mm:ss").format('DateTime.Now')
   //contentWordCount=wordCount(content)
   NoteCubit() : super(NoteInitial());
-  // List<Note> items = [];
   Future<void> getAllNotes() async {
     emit(Loading());
     try {
       List<Note> notes = await DatabaseHelper.instance.readAllNotes();
-      for (int i = 0; i < notes.length; i++) {
-        print(notes[i].createdTime);
-      }
       emit(NotesLoaded(notes: notes));
     } catch (e) {
       emit(Error(error: e.toString()));
@@ -34,6 +30,15 @@ class NoteCubit extends Cubit<NoteState> {
       }
     } catch (e) {
       emit(Error(error: e.toString()));
+    }
+  }
+
+  Future<void> deleteNote(Note note) async {
+    if (state is NotesLoaded) {
+      final updatedNote = (state as NotesLoaded).notes;
+      updatedNote.remove(note);
+      emit(NotesLoaded(notes: updatedNote));
+      await DatabaseHelper.instance.delete(note.timeStamp.toIso8601String());
     }
   }
   // void shareNote(Note note) {

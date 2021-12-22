@@ -1,70 +1,64 @@
+import 'dart:math';
+
 class Note {
-  final int? id;
+  final DateTime timeStamp;
   final String title;
   final bool isImportant;
   final int number;
   final String description;
-  final DateTime createdTime;
   Note({
     required this.title,
-    this.id,
+    required this.timeStamp,
     required this.description,
-    required this.createdTime,
     required this.isImportant,
     required this.number,
   });
-  Note copy(
-          {int? id,
-          String? title,
-          bool? isImportant,
-          int? number,
-          String? content,
-          DateTime? createdTime}) =>
-      Note(
-        id: id ?? this.id,
-        title: title ?? this.title,
-        isImportant: isImportant ?? this.isImportant,
-        number: number ?? this.number,
-        description: content ?? this.description,
-        createdTime: createdTime ?? this.createdTime,
-      );
+  // Note copy(
+  //         {String? id,
+  //         String? title,
+  //         bool? isImportant,
+  //         int? number,
+  //         String? description,
+  //         DateTime? createdTime}) =>
+  //     Note(
+  //       timeStamp: id ?? timeStamp,
+  //       title: title ?? this.title,
+  //       isImportant: isImportant ?? this.isImportant,
+  //       number: number ?? this.number,
+  //       description: description ?? this.description,
+  //       createdTime: createdTime ?? this.createdTime,
+  //     );
 
   factory Note.fromJson(Map<String, dynamic> json) {
     return Note(
-      id: int.parse(json["id"]),
-      isImportant: int.parse(json["isImportant"]) == 1,
-      number: int.parse(json["number"]),
-      title: json["title"],
-      description: json["description"],
-      createdTime: DateTime.parse(json["createdTime"]),
+      timeStamp: DateTime.parse(json[NoteFields.timeStamp]),
+      title: json[NoteFields.title],
+      isImportant: json[NoteFields.isImportant] == 1,
+      number: json[NoteFields.number],
+      description: json[NoteFields.description],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      NoteFields.id: id,
+      NoteFields.timeStamp: timeStamp.toIso8601String(),
+      NoteFields.title: title,
       NoteFields.isImportant: isImportant ? 1 : 0,
       NoteFields.number: number,
-      NoteFields.title: title,
       NoteFields.description: description,
-      NoteFields.createdTime: createdTime.toIso8601String(),
     };
   }
-
-//
-
 }
 
 class NoteFields {
   static final List<String> values = [
     /// Add all fields
-    id, isImportant, number, title, description, createdTime
+    timeStamp, isImportant, number, title, description,
   ];
 
-  static const String id = '_id';
+  static const String timeStamp = 'timeStamp';
   static const String isImportant = 'isImportant';
   static const String number = 'number';
   static const String title = 'title';
   static const String description = 'description';
-  static const String createdTime = 'createdTime';
 }

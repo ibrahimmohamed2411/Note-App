@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,11 +5,13 @@ import 'package:note_app/data/models/note.dart';
 import 'package:note_app/logic/cubits/note_cubit.dart';
 
 class AddNoteScreen extends StatelessWidget {
-  AddNoteScreen({Key? key}) : super(key: key);
+  const AddNoteScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var _formKey = GlobalKey<FormState>();
+    TextEditingController titleController = TextEditingController();
+    TextEditingController descriptionController = TextEditingController();
     return Scaffold(
       backgroundColor: Colors.blueGrey,
       appBar: AppBar(
@@ -19,19 +19,18 @@ class AddNoteScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              // if (_formKey.currentState!.validate()) {
-              //
-              // }
-              BlocProvider.of<NoteCubit>(context).addNote(
-                Note(
-                  title: 'title',
-                  description: 'description',
-                  createdTime: DateTime.now(),
-                  isImportant: true,
-                  number: 2,
-                ),
-              );
-              Navigator.of(context).pop();
+              if (_formKey.currentState!.validate()) {
+                BlocProvider.of<NoteCubit>(context).addNote(
+                  Note(
+                    timeStamp: DateTime.now(),
+                    title: titleController.text,
+                    description: descriptionController.text,
+                    isImportant: false,
+                    number: 1,
+                  ),
+                );
+                Navigator.of(context).pop();
+              }
             },
             icon: const Icon(Icons.save),
           ),
@@ -46,6 +45,7 @@ class AddNoteScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               children: [
                 TextFormField(
+                  controller: titleController,
                   keyboardType: TextInputType.text,
                   maxLength: 30,
                   style: const TextStyle(
@@ -62,13 +62,14 @@ class AddNoteScreen extends StatelessWidget {
                     ),
                   ),
                   validator: (title) {
-                    if (title == null) {
+                    if (title!.isEmpty) {
                       return 'Please enter the title for your note';
                     }
                     return null;
                   },
                 ),
                 TextFormField(
+                  controller: descriptionController,
                   cursorColor: Colors.green,
                   maxLines: 60,
                   keyboardType: TextInputType.multiline,
@@ -88,7 +89,7 @@ class AddNoteScreen extends StatelessWidget {
                     ),
                   ),
                   validator: (description) {
-                    if (description == null) {
+                    if (description!.isEmpty) {
                       return 'Please enter the description for your note';
                     }
                     return null;
