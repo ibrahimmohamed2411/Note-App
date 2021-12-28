@@ -42,34 +42,20 @@ class DatabaseHelper {
     db.close();
   }
 
-  Future<int> create(Note note) async {
+  Future<int> create(Map<String, dynamic> map) async {
     Database db = await instance.database;
-    final id = await db.insert(_tableName, note.toJson());
+    final id = await db.insert(_tableName, map);
     return id;
-    // return note.copy(id: id);
   }
 
-  Future<Note> readNote(String timeStamp) async {
-    final db = await instance.database;
-    final maps = await db.query(_tableName,
-        where: '${NoteFields.timeStamp} = ?', whereArgs: [timeStamp]);
-    if (maps.isNotEmpty) {
-      return Note.fromJson(maps.first);
-    } else {
-      throw Exception('id $timeStamp is not found');
-    }
-  }
-
-  Future<List<Note>> readAllNotes() async {
+  Future<List<Map<String, Object?>>> readAllNotes() async {
     Database db = await instance.database;
     const orderBy = '${NoteFields.timeStamp} ASC';
     final List<Map<String, dynamic>> result = await db.query(
       _tableName,
       orderBy: orderBy,
     );
-    List<Note> l = result.map((json) => Note.fromJson(json)).toList();
-
-    return l;
+    return result;
   }
 
   Future<int> update(Note note) async {

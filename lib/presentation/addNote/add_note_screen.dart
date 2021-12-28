@@ -45,6 +45,7 @@ class AddNoteScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               children: [
                 TextFormField(
+                  cursorColor: Colors.green,
                   controller: titleController,
                   keyboardType: TextInputType.text,
                   maxLength: 30,

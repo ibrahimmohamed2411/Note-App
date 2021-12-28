@@ -10,7 +10,7 @@ class AppRouter {
       case homeScreen:
         return MaterialPageRoute(builder: (context) => const HomeScreen());
       case addNoteScreen:
-        return MaterialPageRoute(builder: (context) => AddNoteScreen());
+        return MaterialPageRoute(builder: (context) => const AddNoteScreen());
     }
   }
 }
