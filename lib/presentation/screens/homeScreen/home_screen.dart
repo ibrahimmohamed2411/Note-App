@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:note_app/data/models/note.dart';
 import 'package:note_app/logic/cubits/note_cubit.dart';
 import 'package:note_app/data/services/local/database_helper.dart';
-import 'package:note_app/presentation/homeScreen/widgets/note_list_widget.dart';
 import 'package:note_app/presentation/routes/app_router.dart';
-import 'package:note_app/presentation/homeScreen/widgets/empty_list_widget.dart';
-import 'package:note_app/presentation/widgets/note_card.dart';
+import 'package:note_app/presentation/screens/homeScreen/widgets/empty_list_widget.dart';
+import 'package:note_app/presentation/screens/homeScreen/widgets/note_list_widget.dart';
+import 'package:note_app/presentation/widgets/custom_alert_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -20,12 +18,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     super.dispose();
-    DatabaseHelper.instance.close();
+    // DatabaseHelper.instance.close();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
           'Notes',
@@ -34,6 +33,18 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         actions: [
+          IconButton(
+            onPressed: () {
+              customAlertDialog(
+                  context: context,
+                  btnOk: () {
+                    BlocProvider.of<NoteCubit>(context).deleteAllNotes();
+                    Navigator.of(context).pop();
+                  },
+                  content: 'You will delete all your Notes!!!');
+            },
+            icon: const Icon(Icons.delete),
+          ),
           IconButton(
             onPressed: () {},
             icon: const Icon(Icons.search),

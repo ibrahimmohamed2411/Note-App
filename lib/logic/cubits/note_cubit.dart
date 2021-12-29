@@ -22,10 +22,11 @@ class NoteCubit extends Cubit<NoteState> {
   Future<void> addNote(Note note) async {
     try {
       if (state is NotesLoaded) {
-        final updatedNote = (state as NotesLoaded).notes;
-        updatedNote.add(note);
-        emit(NotesLoaded(notes: updatedNote));
-        await _noteRepository.create(note);
+        final id = await _noteRepository.create(note);
+        final newNote = note.copy(id: id);
+        final updatedNotes = List<Note>.from((state as NotesLoaded).notes)
+          ..add(newNote);
+        emit(NotesLoaded(notes: updatedNotes));
       }
     } catch (e) {
       emit(Error(error: e.toString()));
@@ -34,15 +35,42 @@ class NoteCubit extends Cubit<NoteState> {
 
   Future<void> deleteNote(Note note) async {
     if (state is NotesLoaded) {
-      final updatedNote = (state as NotesLoaded).notes;
-      updatedNote.remove(note);
-      emit(NotesLoaded(notes: updatedNote));
-      await DatabaseHelper.instance.delete(note.timeStamp.toIso8601String());
+      try {
+        final updatedNote = List<Note>.from((state as NotesLoaded).notes);
+        updatedNote.remove(note);
+        emit(NotesLoaded(notes: updatedNote));
+        await DatabaseHelper.instance.delete(note.id!);
+      } catch (e) {
+        emit(Error(error: e.toString()));
+      }
     }
   }
 
-  // void shareNote(Note note) {
-  //   Share.share("""${note.title}
-  //   ${note.content}""");
-  // }
+  Future<void> replaceNote(Note oldNote, Note newNote) async {
+    try {
+      if (state is NotesLoaded) {
+        final notes = List<Note>.from((state as NotesLoaded).notes);
+        final int index = notes.indexOf(oldNote);
+        notes[index] = newNote;
+        emit(NotesLoaded(notes: notes));
+        await _noteRepository.update(newNote);
+      }
+    } catch (e) {
+      emit(Error(error: e.toString()));
+    }
+  }
+
+  Future<void> shareNote(Note note) async {
+    await Share.share("""${note.title}
+    ${note.description}""");
+  }
+
+  Future<int> deleteAllNotes() async {
+    if (state is NotesLoaded) {
+      List<Note>.from((state as NotesLoaded).notes).clear();
+      emit(NotesLoaded(notes: const []));
+      return await _noteRepository.deleteAllNotes();
+    }
+    return -1;
+  }
 }

@@ -15,8 +15,8 @@ class NoteRepository {
     return compute(parseNotes, result);
   }
 
-  Future<int> delete(String timeStamp) async {
-    return _databaseHelper.delete(timeStamp);
+  Future<int> delete(int id) async {
+    return _databaseHelper.delete(id);
   }
 
   Future<int> deleteAllNotes() async {

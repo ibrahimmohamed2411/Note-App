@@ -28,12 +28,11 @@ class DatabaseHelper {
   Future<void> _onCreate(Database db, int version) {
     return db.execute('''
       CREATE TABLE $_tableName(
-        ${NoteFields.timeStamp} TEXT PRIMARY KEY ,
-        ${NoteFields.isImportant} INTEGER NOT NULL,
-        ${NoteFields.number} INTEGER NOT NULL,
+        ${NoteFields.id} INTEGER PRIMARY KEY ,
         ${NoteFields.title} TEXT NOT NULL,
-        ${NoteFields.description} TEXT NOT NULL
-        
+        ${NoteFields.description} TEXT NOT NULL,
+        ${NoteFields.createdDate} TEXT NOT NULL
+       
       )''');
   }
 
@@ -44,13 +43,14 @@ class DatabaseHelper {
 
   Future<int> create(Map<String, dynamic> map) async {
     Database db = await instance.database;
-    final id = await db.insert(_tableName, map);
+    final id = await db.insert(_tableName, map,
+        conflictAlgorithm: ConflictAlgorithm.replace);
     return id;
   }
 
   Future<List<Map<String, Object?>>> readAllNotes() async {
     Database db = await instance.database;
-    const orderBy = '${NoteFields.timeStamp} ASC';
+    const orderBy = '${NoteFields.id} ASC';
     final List<Map<String, dynamic>> result = await db.query(
       _tableName,
       orderBy: orderBy,
@@ -63,17 +63,17 @@ class DatabaseHelper {
     return await db.update(
       _tableName,
       note.toJson(),
-      where: "${NoteFields.timeStamp} = ?",
-      whereArgs: [note.timeStamp],
+      where: "${NoteFields.id} = ?",
+      whereArgs: [note.id],
     );
   }
 
-  Future<int> delete(String timeStamp) async {
+  Future<int> delete(int id) async {
     Database db = await instance.database;
     return await db.delete(
       _tableName,
-      where: "${NoteFields.timeStamp} = ?",
-      whereArgs: [timeStamp],
+      where: "${NoteFields.id} = ?",
+      whereArgs: [id],
     );
   }
 

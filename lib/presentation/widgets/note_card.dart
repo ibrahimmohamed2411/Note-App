@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:note_app/data/models/note.dart';
 import 'package:note_app/logic/cubits/note_cubit.dart';
+import 'package:note_app/presentation/routes/app_router.dart';
+
+import 'custom_alert_dialog.dart';
 
 final _lightColors = [
   Colors.amber.shade300,
@@ -25,34 +28,25 @@ class NoteCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    /// Pick colors from the accent colors based on index
     final color = _lightColors[index % _lightColors.length];
-    // var time = DateFormat("dd MMM yy hh:mm").format(note.timeStamp);
-    final time = DateFormat.yMMMd().format(note.timeStamp);
+    final time = DateFormat.yMMMd().format(note.createdDate);
     final minHeight = getMinHeight(index);
 
     return InkWell(
       onTap: () {
-        //go to details screen
+        Navigator.of(context).pushNamed(
+          AppRouter.noteDetailsScreen,
+          arguments: note,
+        );
       },
       onLongPress: () {
-        showDialog(
+        customAlertDialog(
           context: context,
-          builder: (ctx) => AlertDialog(
-            title: const Text('Confirm Delete'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  BlocProvider.of<NoteCubit>(context).deleteNote(note);
-                  Navigator.of(context).pop();
-                },
-                child: const Text(
-                  'Yes',
-                  style: TextStyle(),
-                ),
-              ),
-            ],
-          ),
+          btnOk: () {
+            BlocProvider.of<NoteCubit>(context).deleteNote(note);
+            Navigator.of(context).pop();
+          },
+          content: 'Delete this note ?',
         );
       },
       child: Card(
@@ -92,7 +86,6 @@ class NoteCardWidget extends StatelessWidget {
     );
   }
 
-  /// To return different height for different widgets
   double getMinHeight(int index) {
     switch (index % 4) {
       case 0:

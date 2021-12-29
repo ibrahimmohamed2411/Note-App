@@ -1,64 +1,56 @@
-import 'dart:math';
-
 class Note {
-  final DateTime timeStamp;
-  final String title;
-  final bool isImportant;
-  final int number;
-  final String description;
+  int? id;
+  String title;
+  String description;
+  final DateTime createdDate;
   Note({
     required this.title,
-    required this.timeStamp,
+    this.id,
     required this.description,
-    required this.isImportant,
-    required this.number,
+    required this.createdDate,
   });
-  // Note copy(
-  //         {String? id,
-  //         String? title,
-  //         bool? isImportant,
-  //         int? number,
-  //         String? description,
-  //         DateTime? createdTime}) =>
-  //     Note(
-  //       timeStamp: id ?? timeStamp,
-  //       title: title ?? this.title,
-  //       isImportant: isImportant ?? this.isImportant,
-  //       number: number ?? this.number,
-  //       description: description ?? this.description,
-  //       createdTime: createdTime ?? this.createdTime,
-  //     );
+  Note copy({
+    int? id,
+    String? title,
+    String? description,
+    DateTime? createdDate,
+  }) =>
+      Note(
+        id: id ?? this.id,
+        title: title ?? this.title,
+        description: description ?? this.description,
+        createdDate: createdDate ?? this.createdDate,
+      );
 
   factory Note.fromJson(Map<String, dynamic> json) {
     return Note(
-      timeStamp: DateTime.parse(json[NoteFields.timeStamp]),
+      id: json[NoteFields.id],
       title: json[NoteFields.title],
-      isImportant: json[NoteFields.isImportant] == 1,
-      number: json[NoteFields.number],
       description: json[NoteFields.description],
+      createdDate: DateTime.parse(json[NoteFields.createdDate]),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      NoteFields.timeStamp: timeStamp.toIso8601String(),
+      NoteFields.id: id,
       NoteFields.title: title,
-      NoteFields.isImportant: isImportant ? 1 : 0,
-      NoteFields.number: number,
       NoteFields.description: description,
+      NoteFields.createdDate: createdDate.toIso8601String(),
     };
   }
 }
 
 class NoteFields {
   static final List<String> values = [
-    /// Add all fields
-    timeStamp, isImportant, number, title, description,
+    id,
+    title,
+    description,
+    createdDate,
   ];
 
-  static const String timeStamp = 'timeStamp';
-  static const String isImportant = 'isImportant';
-  static const String number = 'number';
+  static const String id = 'id';
   static const String title = 'title';
   static const String description = 'description';
+  static const String createdDate = 'createdDate';
 }
