@@ -1,9 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:note_app/data/models/note.dart';
-import 'package:note_app/data/repositories/note_repository.dart';
-import 'package:note_app/data/services/local/database_helper.dart';
 import 'package:share/share.dart';
+
+import '../../../data/models/note.dart';
+import '../../../data/repositories/note_repository.dart';
+import '../../../data/services/local/database_helper.dart';
+
 part 'note_state.dart';
 
 class NoteCubit extends Cubit<NoteState> {

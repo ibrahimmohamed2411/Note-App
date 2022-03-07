@@ -17,9 +17,11 @@ class AppRouter {
       case addNoteScreen:
         return MaterialPageRoute(builder: (context) => const AddNoteScreen());
       case noteDetailsScreen:
-        final note = settings.arguments as Note;
+        final note = settings.arguments as int;
         return MaterialPageRoute(
-            builder: (context) => NoteDetailsScreen(note: note));
+            builder: (context) => NoteDetailsScreen(
+                  noteIndex: note,
+                ));
       case updateNoteScreen:
         final note = settings.arguments as Note;
         return MaterialPageRoute(

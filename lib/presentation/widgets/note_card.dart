@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:note_app/data/models/note.dart';
-import 'package:note_app/logic/cubits/note_cubit.dart';
 import 'package:note_app/presentation/routes/app_router.dart';
 
+import '../../logic/cubits/note/note_cubit.dart';
 import 'custom_alert_dialog.dart';
 
 final _lightColors = [
@@ -34,9 +34,9 @@ class NoteCardWidget extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        Navigator.of(context).pushNamed(
+        var pushNamed = Navigator.of(context).pushNamed(
           AppRouter.noteDetailsScreen,
-          arguments: note,
+          arguments: index,
         );
       },
       onLongPress: () {

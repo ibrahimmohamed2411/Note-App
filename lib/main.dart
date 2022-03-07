@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:note_app/logic/cubits/note_cubit.dart';
+import 'package:note_app/logic/cubits/theme/theme_cubit.dart';
 import 'package:note_app/presentation/routes/app_router.dart';
+
+import 'logic/cubits/note/note_cubit.dart';
 
 void main() {
   runApp(const NoteApp());
@@ -11,6 +13,7 @@ void main() {
 
 class NoteApp extends StatelessWidget {
   const NoteApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -18,17 +21,32 @@ class NoteApp extends StatelessWidget {
         statusBarColor: Colors.blueGrey,
       ),
     );
-    return BlocProvider(
-      create: (ctx) => NoteCubit()..getAllNotes(),
-      child: MaterialApp(
-        title: 'Note App',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blueGrey,
-          // visualDensity: VisualDensity.adaptivePlatformDensity,
-          textTheme: GoogleFonts.poppinsTextTheme(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (ctx) => NoteCubit()..getAllNotes(),
         ),
-        onGenerateRoute: AppRouter.onGenerateRoute,
+        BlocProvider(
+          create: (ctx) => ThemeCubit(),
+        ),
+      ],
+      child: BlocBuilder<ThemeCubit, bool>(
+        builder: (context, state) {
+          return MaterialApp(
+            title: 'Note App',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              primarySwatch: Colors.blueGrey,
+              // visualDensity: VisualDensity.adaptivePlatformDensity,
+              textTheme: GoogleFonts.poppinsTextTheme(),
+            ),
+            darkTheme: ThemeData.dark().copyWith(
+              accentColor: Colors.black,
+            ),
+            themeMode: state ? ThemeMode.dark : ThemeMode.light,
+            onGenerateRoute: AppRouter.onGenerateRoute,
+          );
+        },
       ),
     );
   }

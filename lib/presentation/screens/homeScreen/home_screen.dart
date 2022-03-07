@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:note_app/logic/cubits/note_cubit.dart';
-import 'package:note_app/data/services/local/database_helper.dart';
-import 'package:note_app/presentation/routes/app_router.dart';
 import 'package:note_app/presentation/screens/homeScreen/widgets/empty_list_widget.dart';
 import 'package:note_app/presentation/screens/homeScreen/widgets/note_list_widget.dart';
 import 'package:note_app/presentation/widgets/custom_alert_dialog.dart';
+
+import '../../../logic/cubits/note/note_cubit.dart';
+import '../../routes/app_router.dart';
+import '../searchScreen/search_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -46,7 +47,13 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: const Icon(Icons.delete),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () => showSearch(
+              context: context,
+              delegate: Search(
+                  data: ((BlocProvider.of<NoteCubit>(context)).state
+                          as NotesLoaded)
+                      .notes),
+            ),
             icon: const Icon(Icons.search),
           ),
         ],
