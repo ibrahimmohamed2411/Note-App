@@ -20,24 +20,21 @@ class UpdateNoteScreen extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         actions: [
-          OutlinedButton(
+          IconButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
+                Note newNote = note.copy(
+                  title: _titleController.text,
+                  description: _descriptionController.text,
+                );
                 BlocProvider.of<NoteCubit>(context).replaceNote(
                   note,
-                  note.copy(
-                    title: _titleController.text,
-                    description: _descriptionController.text,
-                  ),
+                  newNote,
                 );
-
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(newNote);
               }
             },
-            child: const Text(
-              'Save',
-              style: TextStyle(color: Colors.red),
-            ),
+            icon: const Icon(Icons.save),
           ),
         ],
       ),

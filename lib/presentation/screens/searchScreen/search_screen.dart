@@ -9,10 +9,11 @@ class Search extends SearchDelegate {
   List<Widget>? buildActions(BuildContext context) {
     return [
       IconButton(
-          onPressed: () {
-            query = '';
-          },
-          icon: const Icon(Icons.clear)),
+        onPressed: () {
+          query = '';
+        },
+        icon: const Icon(Icons.clear),
+      ),
     ];
   }
 
@@ -29,18 +30,38 @@ class Search extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     List<Note> notes = [];
-    for (Note note in data) {
-      if (note.title.toLowerCase().contains(query.toLowerCase()) ||
-          note.description.toLowerCase().contains(query.toLowerCase())) {
-        notes.add(note);
+    if (query.isNotEmpty) {
+      for (Note note in data) {
+        if (note.title.toLowerCase().contains(query.toLowerCase()) ||
+            note.description.toLowerCase().contains(query.toLowerCase())) {
+          notes.add(note);
+        }
       }
     }
+
     if (notes.isNotEmpty) {
       return NoteListWidget(
         notes: notes,
+        beforeTap: () => close(context, 0),
       );
     }
-    return const Center(child: Text('No result found'));
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(
+          'assets/not_found.gif',
+        ),
+        const Text(
+          'No result found',
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+            color: Colors.blueGrey,
+          ),
+        ),
+      ],
+    );
   }
 
   @override

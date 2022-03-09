@@ -37,11 +37,8 @@ class NoteApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               primarySwatch: Colors.blueGrey,
-              // visualDensity: VisualDensity.adaptivePlatformDensity,
+              visualDensity: VisualDensity.adaptivePlatformDensity,
               textTheme: GoogleFonts.poppinsTextTheme(),
-            ),
-            darkTheme: ThemeData.dark().copyWith(
-              accentColor: Colors.black,
             ),
             themeMode: state ? ThemeMode.dark : ThemeMode.light,
             onGenerateRoute: AppRouter.onGenerateRoute,

@@ -8,19 +8,8 @@ import '../../../logic/cubits/note/note_cubit.dart';
 import '../../routes/app_router.dart';
 import '../searchScreen/search_screen.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  @override
-  void dispose() {
-    super.dispose();
-    // DatabaseHelper.instance.close();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,24 +26,35 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             onPressed: () {
               customAlertDialog(
-                  context: context,
-                  btnOk: () {
-                    BlocProvider.of<NoteCubit>(context).deleteAllNotes();
-                    Navigator.of(context).pop();
-                  },
-                  content: 'You will delete all your Notes!!!');
+                context: context,
+                btnOk: () {
+                  BlocProvider.of<NoteCubit>(context).deleteAllNotes();
+                  Navigator.of(context).pop();
+                },
+                content: 'You will delete all your Notes!!!',
+              );
             },
             icon: const Icon(Icons.delete),
           ),
-          IconButton(
-            onPressed: () => showSearch(
-              context: context,
-              delegate: Search(
-                  data: ((BlocProvider.of<NoteCubit>(context)).state
-                          as NotesLoaded)
-                      .notes),
-            ),
-            icon: const Icon(Icons.search),
+          BlocBuilder<NoteCubit, NoteState>(
+            buildWhen: (pre, current) => pre != current,
+            builder: (context, state) {
+              if (state is NotesLoaded) {
+                return IconButton(
+                  onPressed: () => showSearch(
+                    context: context,
+                    delegate: Search(
+                      data: state.notes,
+                    ),
+                  ),
+                  icon: const Icon(Icons.search),
+                );
+              }
+              return const IconButton(
+                onPressed: null,
+                icon: Icon(Icons.search),
+              );
+            },
           ),
         ],
       ),
@@ -66,12 +66,15 @@ class _HomeScreenState extends State<HomeScreen> {
             if (state.notes.isEmpty) {
               return const EmptyListWidget();
             }
-            return NoteListWidget(notes: state.notes);
+            return NoteListWidget(
+              notes: state.notes,
+              beforeTap: () {},
+            );
           }
           if (state is Error) {
             return Center(child: Text(state.error.toString()));
           }
-          return const Center(child: Text('Error'));
+          return const SizedBox();
         },
       ),
       floatingActionButton: FloatingActionButton(

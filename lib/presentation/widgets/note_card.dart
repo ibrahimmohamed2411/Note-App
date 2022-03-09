@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:note_app/data/models/note.dart';
-import 'package:note_app/presentation/routes/app_router.dart';
-
-import '../../logic/cubits/note/note_cubit.dart';
-import 'custom_alert_dialog.dart';
 
 final _lightColors = [
   Colors.amber.shade300,
@@ -17,10 +12,12 @@ final _lightColors = [
 ];
 
 class NoteCardWidget extends StatelessWidget {
+  final GestureTapCallback? onTap;
   const NoteCardWidget({
     Key? key,
     required this.note,
     required this.index,
+    this.onTap,
   }) : super(key: key);
 
   final Note note;
@@ -33,22 +30,7 @@ class NoteCardWidget extends StatelessWidget {
     final minHeight = getMinHeight(index);
 
     return InkWell(
-      onTap: () {
-        var pushNamed = Navigator.of(context).pushNamed(
-          AppRouter.noteDetailsScreen,
-          arguments: index,
-        );
-      },
-      onLongPress: () {
-        customAlertDialog(
-          context: context,
-          btnOk: () {
-            BlocProvider.of<NoteCubit>(context).deleteNote(note);
-            Navigator.of(context).pop();
-          },
-          content: 'Delete this note ?',
-        );
-      },
+      onTap: onTap,
       child: Card(
         color: color,
         child: Container(

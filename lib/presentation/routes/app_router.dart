@@ -10,6 +10,7 @@ class AppRouter {
   static const String addNoteScreen = '/add-note-screen';
   static const String noteDetailsScreen = '/note-details-screen';
   static const String updateNoteScreen = '/update-note-screen';
+
   static Route? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case homeScreen:
@@ -17,15 +18,18 @@ class AppRouter {
       case addNoteScreen:
         return MaterialPageRoute(builder: (context) => const AddNoteScreen());
       case noteDetailsScreen:
-        final note = settings.arguments as int;
+        final note = settings.arguments as Note;
         return MaterialPageRoute(
-            builder: (context) => NoteDetailsScreen(
-                  noteIndex: note,
-                ));
+          builder: (ctx) => NoteDetailsScreen(
+            note: note,
+          ),
+        );
       case updateNoteScreen:
         final note = settings.arguments as Note;
         return MaterialPageRoute(
-            builder: (context) => UpdateNoteScreen(note: note));
+          builder: (ctx) => UpdateNoteScreen(note: note),
+        );
     }
+    return null;
   }
 }
